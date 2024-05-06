@@ -1,0 +1,8 @@
+**/target/
+#每次编译会出来了的
+.idea
+#idea自己加的
+*.iml
+*.class
+*Test.java
+**/test/
