@@ -4,6 +4,7 @@ import com.sky.constant.JwtClaimsConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.properties.JwtProperties;
 import com.sky.result.PageResult;
@@ -91,11 +92,10 @@ public class EmployeeController {
         log.info("new employee ... {}", employeeDTO);
         employeeService.add(employeeDTO);
         return Result.success();
-
     }
 
     /**
-     * 增加员工
+     * 员工分页
      * @param employeePageQueryDTO the employee that needs to be added
      * @return whether the add the successful
      */
@@ -110,6 +110,76 @@ public class EmployeeController {
         return Result.success(employeeService.page(employeePageQueryDTO));
 
     }
+
+    /**
+     * 更改员工状态
+     * @param status the result status of employee
+     * @param id the employee that needs to be adjusted
+     * @return whether the change status the successful
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation(value = "status")
+    // note the integer status is under the same name as PostMapping {status} so the PathVariable is not necessary
+    //PathVariable("match something in {}")
+    public Result<String> changeStatus(@PathVariable("status") Integer status, Long id) {
+        // {} 为占位符
+        log.info("change status for employee {} to status {}", id, status);
+
+        employeeService.changeStatus(status, id);
+        return Result.success();
+
+    }
+
+    /**
+     * 更新员工信息
+     * @param employeeDTO the employee that needs to be added
+     * @return whether the add the successful
+     */
+    @PutMapping()
+    @ApiOperation(value = "edit employee")
+    public Result<String> update(@RequestBody EmployeeDTO employeeDTO) {
+        // {} 为占位符
+        log.info("update employee ... {}", employeeDTO);
+        employeeService.update(employeeDTO);
+        return Result.success();
+    }
+
+    /**
+     * 员工详情
+     * @param id the employee that needs to be returned
+     * @return detail info about employee
+     */
+    //@PostMapping("/add") 从接口文档进行理解
+
+    @GetMapping("/{id}")
+    @ApiOperation(value = "single lookup")
+    // the input is not a js object ...
+    public Result<Employee> lookup (@PathVariable("id") Long id) {
+        // the video claimed long id
+        log.info("Looking up employee with id {}", id);
+        //return Result.success(employeeService.getById(Long.valueOf(id)));
+        Employee employee = employeeService.getById(id);
+        // manually avoid passing password related parameter to front end
+        employee.setPassword("****");
+        return Result.success(employee);
+    }
+
+    /**
+     * 更新密码
+     * @param passwordEditDTO the employee that needs to be added
+     * @return whether the add the successful
+     */
+    @PutMapping("editPassword")
+    @ApiOperation(value = "reset password")
+    public Result<String> editPassword(@RequestBody PasswordEditDTO passwordEditDTO) {
+        // {} 为占位符
+        log.info("update employee password ... {}", passwordEditDTO);
+        employeeService.editPassword(passwordEditDTO);
+        return Result.success();
+    }
+
+
+
 
 
 
