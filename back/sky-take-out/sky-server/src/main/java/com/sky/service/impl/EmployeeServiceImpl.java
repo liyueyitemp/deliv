@@ -1,16 +1,20 @@
 package com.sky.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
+import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,4 +87,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeMapper.insert(employee);
     }
 
+    public PageResult page(EmployeePageQueryDTO employeePageQueryDTO) {
+        // naive : select * from employee limit page * page_size, (page+1) * page_size
+
+        //from pagehelper plugin based on mybatis yield a dynamic sql and change limit
+        PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
+
+        // there is a set local page that use ThreadLocal to set a local page to add limit ...
+        // write sql
+        Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
+
+        //重新分装
+        return new PageResult(page.getTotal(), page.getResult());
+    }
 }
