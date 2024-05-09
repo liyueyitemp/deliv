@@ -3,34 +3,34 @@ package com.sky.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
-import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.CategoryDTO;
-import com.sky.dto.CategoryPageQueryDTO;
-import com.sky.dto.PasswordEditDTO;
+import com.sky.dto.CategoryPageQueryDTO;;
 import com.sky.entity.Category;
-import com.sky.entity.Category;
-import com.sky.exception.AccountLockedException;
-import com.sky.exception.AccountNotFoundException;
-import com.sky.exception.PasswordErrorException;
+
+import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.CategoryMapper;
-import com.sky.mapper.CategoryMapper;
+import com.sky.mapper.DishMapper;
+import com.sky.mapper.SetMealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.CategoryService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private CategoryMapper categoryMapper;
-
+    @Autowired
+    private DishMapper dishMapper;
+    @Autowired
+    private SetMealMapper setMealMapper;
 
     public void add(CategoryDTO categoryDTO) {
         Category category = new Category();
@@ -39,16 +39,16 @@ public class CategoryServiceImpl implements CategoryService {
 
 
         // 增加更多属性
-        category.setStatus(StatusConstant.ENABLE);
+        category.setStatus(StatusConstant.DISABLE);
 
         //此时
-        category.setCreateTime(LocalDateTime.now());
-        category.setUpdateTime(LocalDateTime.now());
+//        category.setCreateTime(LocalDateTime.now());
+//        category.setUpdateTime(LocalDateTime.now());
 
         // TODO change to created/updated user later
         long creatorId = BaseContext.getCurrentId();
-        category.setCreateUser(creatorId);
-        category.setUpdateUser(creatorId);
+//        category.setCreateUser(creatorId);
+//        category.setUpdateUser(creatorId);
 
         categoryMapper.insert(category);
     }
@@ -72,8 +72,8 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = new Category();
         BeanUtils.copyProperties(categoryDTO, category);
 
-        category.setUpdateTime(LocalDateTime.now());
-        category.setUpdateUser(BaseContext.getCurrentId());
+//        category.setUpdateTime(LocalDateTime.now());
+//        category.setUpdateUser(BaseContext.getCurrentId());
 
         categoryMapper.update(category);
     }
@@ -96,11 +96,17 @@ public class CategoryServiceImpl implements CategoryService {
         categoryMapper.update(category);
     }
 
-    public Category getById(Long id) {
-        return categoryMapper.getById(id);
+    public List<Category> getByType(Integer type) {
+        return categoryMapper.getByType(type);
     }
 
     public void deleteById(Long id) {
+        if (!dishMapper.getByCategory(id).isEmpty()) {
+            throw new DeletionNotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_DISH);
+        }
+        if (!setMealMapper.getByCategory(id).isEmpty()) {
+            throw new DeletionNotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_SETMEAL);
+        }
         categoryMapper.deleteById(id);
     };
 }

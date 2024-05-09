@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 /**
  * 员工管理
@@ -93,17 +95,17 @@ public class CategoryController {
 
     /**
      * 分类详情
-     * @param id the category that needs to be returned
+     * @param type the category that needs to be returned
      * @return detail info about category
      */
 
-    @GetMapping("/{id}")
-    @ApiOperation(value = "single lookup")
+    @GetMapping("/list")
+    @ApiOperation(value = "type lookup")
 
-    public Result<Category> lookup (@PathVariable("id") Long id) {
+    public Result<List<Category>> lookup (Integer type) {
 
-        log.info("Looking up category with id {}", id);
-        Category category = categoryService.getById(id);
+        log.info("Looking up category with id {}", type);
+        List<Category> category = categoryService.getByType(type);
         return Result.success(category);
 
     }

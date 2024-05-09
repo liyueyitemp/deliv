@@ -5,6 +5,8 @@ import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
 import com.sky.result.PageResult;
 
+import java.util.List;
+
 public interface CategoryService {
     
     void add(CategoryDTO categoryDTO);
@@ -15,7 +17,7 @@ public interface CategoryService {
 
     void changeStatus(Integer status, Long id);
 
-    Category getById(Long id);
+    List<Category> getByType(Integer type);
 
     void deleteById(Long id);
 }
