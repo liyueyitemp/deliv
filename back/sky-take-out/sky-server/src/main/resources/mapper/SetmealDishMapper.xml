@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.SetmealDishMapper">
+    <insert id="insertBatch">
+    insert into setmeal_dish(setmeal_id, dish_id, name, price, copies)
+    values
+    <foreach collection="setmealDishes" item="sd" separator=",">
+        (#{sd.setmealId}, #{sd.dishId}, #{sd.name}, #{sd.price}, #{sd.copies})
+    </foreach>
+
+    </insert>
+
+    <delete id="deleteBySetmealIdBatch">
+        delete from setmeal_dish where setmeal_id in
+        <foreach collection="setmealIds" item="setmealId" separator="," open="(" close=")">
+            #{setmealId}
+        </foreach>
+    </delete>
+
+    <!--&lt;!&ndash;    userGeneratedKeys will make sure the entity that got passed in can get the generated id and keyProperty has to map the attribute name in passed in entity&ndash;&gt;-->
+<!--    <insert id="insert" parameterType="com.sky.entity.SetMeal" useGeneratedKeys="true" keyProperty="id">-->
+<!--        insert into set_meal (category_id, name, price, image, description, status,-->
+<!--                          create_time, update_time, create_user, update_user)-->
+<!--        values (#{categoryId}, #{name}, #{price}, #{image}, #{description},#{status},-->
+<!--                #{createTime},#{updateTime},#{createUser}, #{updateUser});-->
+<!--    </insert>-->
+
+<!--&lt;!&ndash;    <update id="update" parameterType="SetMeal">&ndash;&gt;-->
+<!--&lt;!&ndash;        update set_meal&ndash;&gt;-->
+<!--&lt;!&ndash;        <set>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="categoryId != null"> category_id = #{categoryId}, </if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="name != null"> name = #{name}, </if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="price != null"> price = #{price}, </if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="image != null"> image = #{image}, </if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="description != null"> description = #{description}, </if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="status != null"> status = #{status}, </if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="createTime != null"> create_time = #{createTime}, </if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="updateTime != null"> update_time = #{updateTime}, </if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="createUser != null"> create_user = #{createUser}, </if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="updateUser != null"> update_user = #{updateUser}, </if>&ndash;&gt;-->
+<!--&lt;!&ndash;        </set>&ndash;&gt;-->
+
+<!--&lt;!&ndash;        where id = #{id}&ndash;&gt;-->
+<!--&lt;!&ndash;    </update>&ndash;&gt;-->
+
+<!--    <select id="pageQuery" resultType="com.sky.vo.SetMealVO">-->
+<!--        select d.*, c.name as categoryName from set_meal d left outer join category c on d.category_id = c.id-->
+<!--        <where>-->
+<!--            <if test="name != null and name != ''">-->
+<!--                and name like concat('%',#{name},'%')-->
+<!--            </if>-->
+
+<!--            <if test="categoryId != null and categoryId != ''">-->
+<!--                and category_id = #{categoryId}-->
+<!--            </if>-->
+
+<!--            <if test="status != null and status != ''">-->
+<!--                and status = #{status}-->
+<!--            </if>-->
+<!--        </where>-->
+<!--    </select>-->
+
+    <select id="getByDishIds" resultType="java.lang.Long">
+        select setmeal_id from setmeal_dish where dish_id in
+        <foreach collection="dishIds" item="dishId" separator="," open="(" close=")">
+            #{dishId}
+        </foreach>
+    </select>
+</mapper>

@@ -1,4 +1,5 @@
 package com.sky.controller.admin;
+import com.sky.constant.MessageConstant;
 import com.sky.result.Result;
 
 import com.sky.utils.AliOssUtil;
@@ -56,7 +57,7 @@ public class CommonController {
             log.error("upload image error: ", e);
 //            throw new RuntimeException(e);
         }
-        return null;
+        return Result.error(MessageConstant.UPLOAD_FAILED);
     }
 
 
