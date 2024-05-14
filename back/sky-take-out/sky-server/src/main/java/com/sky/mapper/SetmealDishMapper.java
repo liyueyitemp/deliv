@@ -10,9 +10,6 @@ import java.util.List;
 @Mapper
 public interface SetmealDishMapper {
 
-//    @Select("select * from setmeal where category_id = #{categoryId}")
-//    List<Setmeal> getByCategory(Long categoryId);
-
     List<Long> getByDishIds(List<Long> dishIds);
 
     void insertBatch(List<SetmealDish> setmealDishes);
@@ -22,4 +19,6 @@ public interface SetmealDishMapper {
 
     @Select("select * from setmeal_dish where setmeal_id = #{setmealId}")
     List<SetmealDish> getBySetmealId(Long setmealId);
+
+    void deleteBySetmealIdBatch(List<Long> setmealIds);
 }

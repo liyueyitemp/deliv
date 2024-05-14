@@ -58,23 +58,23 @@ public class SetmealController {
         return Result.success(setmealService.page(setmealPageQueryDTO));
 
     }
-//
-//    /**
-//     * 更改分类状态
-//     * @param status the result status of setmeal
-//     * @param id the setmeal that needs to be adjusted
-//     * @return whether the change status the successful
-//     */
-//    @PostMapping("/status/{status}")
-//    @ApiOperation(value = "status")
-//    public Result<String> changeStatus(@PathVariable("status") Integer status, Long id) {
-//
-//        log.info("change status for setmeal {} to status {}", id, status);
-//        setmealService.changeStatus(status, id);
-//        return Result.success();
-//
-//    }
-//
+
+    /**
+     * 更改分类状态
+     * @param status the result status of setmeal
+     * @param id the setmeal that needs to be adjusted
+     * @return whether the change status the successful
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation(value = "status")
+    public Result<String> changeStatus(@PathVariable("status") Integer status, Long id) {
+
+        log.info("change status for setmeal {} to status {}", id, status);
+        setmealService.changeStatus(status, id);
+        return Result.success();
+
+    }
+
     /**
      * 更新分类信息
      * @param setmealDTO the setmeal that needs to be added
@@ -117,23 +117,23 @@ public class SetmealController {
 //
 //    }
 //
-//    /**
-//     * 单个分类删除
-//     * @param ids the setmeales that needs to be deleted
-//     * @return whether delete was successful
-//     */
-//
-//    @DeleteMapping()
-//    @ApiOperation(value = "batch delete")
-//
-//    public Result<String> delete (@RequestParam("ids") List<Long> ids) {
-//
-//        log.info("Deleting setmeal with id {}", ids);
-//        setmealService.deleteBatch(ids);
-//
-//        return Result.success();
-//
-//    }
+    /**
+     * 单个分类删除
+     * @param ids the setmeales that needs to be deleted
+     * @return whether delete was successful
+     */
+
+    @DeleteMapping()
+    @ApiOperation(value = "batch delete")
+
+    public Result<String> delete (@RequestParam("ids") List<Long> ids) {
+
+        log.info("Deleting setmeal with id {}", ids);
+        setmealService.deleteBatch(ids);
+
+        return Result.success();
+
+    }
 
 
 }

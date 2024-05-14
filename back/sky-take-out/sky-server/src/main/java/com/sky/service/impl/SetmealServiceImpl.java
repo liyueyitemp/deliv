@@ -1,16 +1,16 @@
 package com.sky.service.impl;
-
+import com.sky.constant.MessageConstant;
+import com.sky.context.BaseContext;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.StatusConstant;
 import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
-//import com.sky.entity.SetmealFlavor;
 import com.sky.entity.SetmealDish;
+import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
-//import com.sky.mapper.SetmealFlavorMapper;
 import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.SetmealService;
@@ -19,7 +19,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -99,47 +99,44 @@ public class SetmealServiceImpl implements SetmealService {
         return setmealVO;
     };
 
-//    public void changeStatus(Integer status, Long id) {
-//
-//        Setmeal setmeal = Setmeal.builder()
-//                .id(id)
-//                .status(status)
-//                .updateUser(BaseContext.getCurrentId())
-//                .updateTime(LocalDateTime.now())
-//                .build();
-//
-//        setmealMapper.update(setmeal);
-//    }
-//
+    public void changeStatus(Integer status, Long id) {
+
+        Setmeal setmeal = Setmeal.builder()
+                .id(id)
+                .status(status)
+                .updateUser(BaseContext.getCurrentId())
+                .updateTime(LocalDateTime.now())
+                .build();
+
+        setmealMapper.update(setmeal);
+    }
+
 //    public List<Setmeal> getByCategory(Integer categoryId) {
 //        return setmealMapper.getByCategoryId(categoryId);
 //    }
+
+    //考虑一下清理云端资源呢！！
+    @Transactional
+    public void deleteBatch(List<Long> ids) {
+        //感觉这里可以优化
+        for (Long id : ids) {
+            Setmeal setmeal = setmealMapper.getById(id);
+            if (setmeal != null && StatusConstant.ENABLE.equals(setmeal.getStatus())) {
+                throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ON_SALE);
+            }
+        }
+
 //
-//    public Setmeal getById(Long id) {
-//        return setmealMapper.getById(id);
-//    }
-//
-//    //考虑一下清理云端资源呢！！
-//    @Transactional
-//    public void deleteBatch(List<Long> ids) {
-//        //感觉这里可以优化
-//        for (Long id : ids) {
-//            Setmeal setmeal = setmealMapper.getById(id);
-//            if (setmeal != null && StatusConstant.ENABLE.equals(setmeal.getStatus())) {
-//                throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
-//            }
-//        }
 //        List<Long>setmealIds = setmealDishMapper.getBySetmealIds(ids);
 //
 //        if (setmealIds != null && !setmealIds.isEmpty()) {
 //            throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
 //        }
-//
-//        setmealMapper.deleteBatch(ids);
-//
-//        setmealFlavorMapper.deleteBySetmealIdBatch(ids);
-//
-//
-//    }
+
+        setmealMapper.deleteBatch(ids);
+        setmealDishMapper.deleteBySetmealIdBatch(ids);
+
+
+    }
 
 }

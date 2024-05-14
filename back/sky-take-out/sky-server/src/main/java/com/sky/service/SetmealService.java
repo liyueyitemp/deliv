@@ -17,15 +17,11 @@ public interface SetmealService {
 
     void update(SetmealDTO setmealDTO);
 
-//    PageResult page(SetmealPageQueryDTO dishPageQueryDTO);
-//
-//    void update(SetmealDTO dishDTO);
-//
-//    void deleteBatch(List<Long> ids);
-//
     SetmealVO getById(Long id);
-//
-//    void changeStatus(Integer status, Long id);
+
+    void changeStatus(Integer status, Long id);
+
+    void deleteBatch(List<Long> ids);
 
 //    List<Setmeal> getByCategory(Integer categoryId);
 }
